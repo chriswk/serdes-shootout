@@ -25,14 +25,13 @@ import org.apache.commons.compress.compressors.CompressorInputStream;
 import org.apache.commons.compress.compressors.CompressorOutputStream;
 import org.apache.commons.compress.compressors.CompressorStreamFactory;
 import org.apache.commons.compress.utils.IOUtils;
-import org.apache.streams.data.util.JsonUtil;
 
 public abstract class CompressedStreams extends StreamsBase {
     private static final CompressorStreamFactory FACTORY = new CompressorStreamFactory();
 
     @Override
     protected void writeTo(OutputStream out) throws IOException, CompressorException {
-        String json = JsonUtil.objectToJson(getObject());
+        String json = objectMapper.writeValueAsString(getObject());
         CompressorOutputStream outputStream = FACTORY.createCompressorOutputStream(getCompressor(), out);
         outputStream.write(json.getBytes());
         outputStream.flush();

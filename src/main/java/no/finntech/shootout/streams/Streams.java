@@ -19,13 +19,11 @@ package no.finntech.shootout.streams;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import org.apache.streams.data.util.JsonUtil;
-
 public class Streams extends StreamsBase {
 
     @Override
     protected void writeTo(OutputStream out) throws IOException {
-        String json = JsonUtil.objectToJson(getObject());
+        String json = objectMapper.writeValueAsString(getObject());
         out.write(json.getBytes());
     }
 

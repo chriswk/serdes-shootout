@@ -16,34 +16,36 @@
 
 package no.finntech.shootout.streams;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.finntech.shootout.Case;
 import no.finntech.shootout.Constants;
 import no.finntech.shootout.Constants.Ad;
 import no.finntech.shootout.Constants.AttributedTo;
 import no.finntech.shootout.Constants.AvailableAt;
 import no.finntech.shootout.Constants.Viewer;
-
 import org.apache.commons.compress.compressors.CompressorException;
-import org.apache.streams.data.util.JsonUtil;
 import org.apache.streams.data.util.RFC3339Utils;
+import org.apache.streams.jackson.StreamsJacksonMapper;
 import org.apache.streams.pojo.json.Activity;
 import org.apache.streams.pojo.json.ActivityObject;
-import org.apache.streams.pojo.json.Actor;
+import org.apache.streams.pojo.json.Author;
 import org.apache.streams.pojo.json.Generator;
 import org.apache.streams.pojo.json.objectTypes.Offer;
+import org.apache.streams.pojo.json.objectTypes.Person;
 import org.apache.streams.pojo.json.objectTypes.Place;
 import org.openjdk.jmh.annotations.Benchmark;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 public abstract class StreamsBase extends Case<Activity> {
+    protected static final ObjectMapper objectMapper = StreamsJacksonMapper.getInstance();
     @Override
     protected Activity buildObject() {
         return new Activity()
                 .withPublished(RFC3339Utils.parseToUTC(Constants.PUBLISHED))
-                .withActor((Actor) new Actor()
+                .withActor(new Author()
                         .withObjectType("Person")
                         .withId(Viewer.ID)
                         .withAdditionalProperty("uniqueVisitorId", Viewer.UNIQUE_ID)
@@ -55,11 +57,10 @@ public abstract class StreamsBase extends Case<Activity> {
                         .withId(Ad.ID)
                         .withAdditionalProperty("name", Ad.NAME)
                         .withAdditionalProperty("category", Ad.CATEGORY)
-                        .withAdditionalProperty("seller", new Actor()
-                                .withObjectType("Person")
-                                .withId(Constants.Seller.ID))
+                        .withAdditionalProperty("seller", new Person()
+                                .withAdditionalProperty("id", Constants.Seller.ID))
                         .withAdditionalProperty("availableAt", new Place()
-                            .withAdditionalProperty("id", AvailableAt.ID))
+                                .withAdditionalProperty("id", AvailableAt.ID))
                         .withAdditionalProperty("proce", Ad.PRICE))
                 .withGenerator((Generator) new Generator()
                         .withObjectType("Application")
@@ -84,7 +85,7 @@ public abstract class StreamsBase extends Case<Activity> {
     @Benchmark
     public Activity read() throws Exception {
         String json = getJson();
-        return JsonUtil.jsonToObject(json, Activity.class);
+        return objectMapper.readValue(json, Activity.class);
     }
 
     protected abstract String getJson() throws CompressorException, IOException;
