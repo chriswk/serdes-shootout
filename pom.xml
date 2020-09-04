@@ -31,7 +31,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <version.avro>1.9.1</version.avro>
         <version.jdk>11</version.jdk>
-        <version.log4j>2.12.1</version.log4j>
+        <version.log4j>2.13.3</version.log4j>
         <version.jmh>1.21</version.jmh>
 
         <version.thrift>0.12.0</version.thrift>
