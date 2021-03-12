@@ -34,7 +34,7 @@
         <version.log4j>2.12.1</version.log4j>
         <version.jmh>1.21</version.jmh>
 
-        <version.thrift>0.12.0</version.thrift>
+        <version.thrift>0.14.0</version.thrift>
         <version.protobuf>3.10.0</version.protobuf>
 
         <thrift.executable>thrift-${version.thrift}</thrift.executable>
